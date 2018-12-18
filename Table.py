@@ -4,6 +4,8 @@ class Table:
     def __init__(self, name=""):
         self.__rows = 0   # 行数（包含文字行）
         self.__cols = 0   # 列数（包含文字行）
+        self.__keystr = ""
+        self.__keys = []
         self.__name = name
 
         self.__datastr = ""   # 字符串形式的数据
@@ -51,6 +53,22 @@ class Table:
         if len(datastr) > 1 and "," in datastr:
             self.__datastr = datastr
 
+    @property
+    def keystr(self):
+        return self.__keystr
+
+    def set_keystr(self, keystr):
+        self.__keystr = keystr
+        if "," in keystr:  # 多区域
+            k = keystr.split(",")
+            for area in k:
+                pass
+
+    @staticmethod
+    def get_keys(keys):
+        for k in keys.split(":"):
+            pass
+
     @staticmethod
     def c2n(self, colname):  # 字符列号转为数字号，从1开始
         ch = colname.upper()
@@ -67,6 +85,8 @@ class Table:
         else:
             return -1, -1
 
+    #def area(self, alabel):
+        #for i in
     """
     表有行列大小，如 SJ_01 有 14行7列， A1：G14
     有两个数据块C3:D14和F3:G7

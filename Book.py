@@ -33,6 +33,19 @@ class Book:
         else:
             return day
 
+    @property
+    def tables(self):
+        return self.__tables
+
+    def gettablebynum(self, tn):
+        if tn < self.__tablenum:
+            return self.__tables[tn]
+
+    def gettablebyname(self, tn):
+        for tt in self.__tables:
+            if tt.name == tn:
+                return tt
+
     def readfromtxt(self, filename):  # 从TXT文件读入数据
         try:
             with open(filename, "r") as fn:
@@ -62,13 +75,23 @@ class Book:
                         lines = lines.strip(",")
 
                     tmp = lines.partition(":")
-                    tt = Table()
-                    tt.set_name(tmp[0])
-                    tt.set_datastr(tmp[2])
-                    self.__tables.append(tt)
-                    self.__tablenum += 1
+                    for tt in self.__tables:
+                        if tt.name == tmp[0]:
+                            tt.set_datastr(tmp[2])
         except IOError:
             print("File Error")
         finally:
             fn.close()
 
+    def readpara(self):
+        fn = open("paras.txt")
+        for line in fn.readlines():
+            line = line.strip("\n")
+            p = line.partition("=")
+            if len(p) == 3:
+                tt = Table()
+                tt.set_name(p[0])
+                tt.set_keystr(p[2])
+
+                self.__tables.append(tt)
+                self.__tablenum += 1

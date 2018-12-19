@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 from Table import Table
 
+# 类---TRS任务，相当于excel的工作簿
 class Book:
     def __init__(self):
         self.__tablenum = 0
@@ -87,13 +89,13 @@ class Book:
         fn = open("paras.txt")
         for line in fn.readlines():
             line = line.strip("\n")
-            p = line.partition("=")
+            p = line.partition("=")  # 表名=左下角;左上1:右下1，左上2:右下2...
             if len(p) == 3:
                 tt = Table()
                 tt.set_name(p[0])
 
-                q = p[2].partition(";")
-                tt.set_cols(ord(q[0][:1])-64)
+                q = p[2].partition(";")  #每个表有两个参数：最大行列；数据块1，2，3...
+                tt.set_cols(ord(q[0][:1])-64)  # 列数
                 tt.set_rows(int(q[0][1:]))
                 tt.set_keystr(q[2])
 

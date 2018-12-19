@@ -1,4 +1,6 @@
 # trstools
 tools for trs
 
-TRS is an old program for reporting. 
+TRS是一个报表系统，广泛应用于各级税务系统，但目前功能略显老旧。 
+
+20181219：完成数据存储/读取功能

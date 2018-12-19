@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from Table import Table
 from Book import Book
 
 b = Book()
 b.readpara()
+print(b.tables[0].in_area("F7"))
+
 b.readfromtxt("KT19010220000.txt")
 print(b.bbq)
 

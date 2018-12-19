@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# 类---TRS报表
+
 class Table:
     """表格类，一个TRS报表中的单张表
     """
@@ -6,11 +9,11 @@ class Table:
         self.__cols = 0   # 列数（包含文字行）
         self.__keystr = ""# 数据区域字符串，以句号隔开，如："C3:D4,F3:G4"
         self.__keys = []  # 数据区域列表（1或多个）
+        self.__cells = [] # 所有的数据标签
         self.__name = name
 
         self.__datastr = ""   # 字符串形式的数据
         self.__data = {}   # 字典形式的数据
-        self.__areas = 2   # 数据块数量
 
     def display(self):
         print("Table %s: rows = %s, cols = %s"%(self.__name, self.__rows, self.__cols))
@@ -52,6 +55,14 @@ class Table:
     def set_datastr(self, datastr):
         if len(datastr) > 1 and "," in datastr:
             self.__datastr = datastr
+            i = 0
+            datas = self.__datastr.split(",")
+
+            for r in range(1, self.__rows):
+                for c in range(1, self.__cols):
+                    if self.in_area(c, r):
+                        self.__data[chr(c + 64) + str(r)]=datas[i]
+                        i += 1
 
     @property
     def keystr(self):
@@ -59,16 +70,30 @@ class Table:
 
     def set_keystr(self, keystr):  #设置数据区域
         self.__keystr = keystr
+        self.__keys = keystr.split(",")
+        for key in self.__keys:
+            p = key.partition(":")
+            leftop = self.lab2rc(p[0])
+            rightb = self.lab2rc(p[2])
+            for r in range(leftop[1], rightb[1]):
+                for c in range(leftop[0], rightb[0]):
+                    self.__cells.append(chr(c) + str(r))
+        self.__data.fromkeys(self.__cells,0.00)
 
-    def in_area(self, cellname):  #判断单元格是否在数字区域, C3 in_area C3:D4, C2 not in_area C3:D4
-        c = self.lab2rc(cellname)
+    def in_area(self, x, y=0):  #判断单元格是否在数字区域, C3 in_area C3:D4, C2 not in_area C3:D4
+        if y == 0:
+            c = self.lab2rc(x)  #以默认参数重载该函数。 单参数为"C3"字符串形式，双参数为 x,y形式
+        else:
+            c = (x, y)
+        result = False
 
-        return c[0]
+        for key in self.__keys:
+            p = key.partition(":")
+            leftop = self.lab2rc(p[0])
+            rightb = self.lab2rc(p[2])
+            result = result or ((leftop[0] <= c[0] <= rightb[0]) and (leftop[1] <= c[1] <= rightb[1]))
 
-    @staticmethod
-    def get_keys(keys):
-        for k in keys.split(":"):
-            pass
+        return result
 
     @staticmethod
     def c2n(colname):  # 字符列号转为数字号，从1开始
@@ -87,8 +112,6 @@ class Table:
         else:
             return -1, -1
 
-    #def area(self, alabel):
-        #for i in
     """
     表有行列大小，如 SJ_01 有 14行7列， A1：G14
     有两个数据块C3:D14和F3:G7

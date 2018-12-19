@@ -19,7 +19,11 @@ class Table:
         print("Table %s: rows = %s, cols = %s"%(self.__name, self.__rows, self.__cols))
 
     def __str__(self):
-        return self.__datastr
+        result = ""
+
+        for key in self.__data:
+            result = result + key + ":" + self.__data[key] + ","
+        return result
 
     @property
     def rows(self):
@@ -58,8 +62,8 @@ class Table:
             i = 0
             datas = self.__datastr.split(",")
 
-            for r in range(1, self.__rows):
-                for c in range(1, self.__cols):
+            for r in range(1, self.__rows+1):
+                for c in range(1, self.__cols+1):
                     if self.in_area(c, r):
                         self.__data[chr(c + 64) + str(r)]=datas[i]
                         i += 1
@@ -75,8 +79,8 @@ class Table:
             p = key.partition(":")
             leftop = self.lab2rc(p[0])
             rightb = self.lab2rc(p[2])
-            for r in range(leftop[1], rightb[1]):
-                for c in range(leftop[0], rightb[0]):
+            for r in range(leftop[1], rightb[1]+1):
+                for c in range(leftop[0], rightb[0]+1):
                     self.__cells.append(chr(c) + str(r))
         self.__data.fromkeys(self.__cells,0.00)
 
@@ -122,5 +126,19 @@ class Table:
     SJ_02->C3  -- 跨表数据
     @-12SJ_01->C3  -- 跨报表期数据
     """
-    def getdata(cellname):  #根据行列名返回数据
-        return 0.00
+    def getdata(self, cellname):  #根据行列名返回数据
+        if ":" in cellname: # 数组
+            pass
+        elif "->" in cellname:  # 表间
+            pass
+        elif "@" in cellname:  # 期间
+            pass
+        else:  #直接
+            return float(self.__data[cellname])
+
+    # 审核公式： C3 > D4, [C3:C8] > [D3:D8]
+    def audit(self, formula):
+        if "=" in formula:
+            p = formula.partition("=")
+            left = p[0]
+            right = p[2]

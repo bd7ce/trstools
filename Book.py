@@ -86,7 +86,7 @@ class Book:
             fn.close()
 
     def readpara(self):  #读入参数表，确定数据块
-        fn = open("paras.txt")
+        fn = open("params/paras.txt")
         for line in fn.readlines():
             line = line.strip("\n")
             p = line.partition("=")  # 表名=左下角;左上1:右下1，左上2:右下2...

@@ -83,7 +83,7 @@ class Book:
         finally:
             fn.close()
 
-    def readpara(self):
+    def readpara(self):  #读入参数表，确定数据块
         fn = open("paras.txt")
         for line in fn.readlines():
             line = line.strip("\n")
@@ -91,7 +91,11 @@ class Book:
             if len(p) == 3:
                 tt = Table()
                 tt.set_name(p[0])
-                tt.set_keystr(p[2])
+
+                q = p[2].partition(";")
+                tt.set_cols(ord(q[0][:1])-64)
+                tt.set_rows(int(q[0][1:]))
+                tt.set_keystr(q[2])
 
                 self.__tables.append(tt)
                 self.__tablenum += 1

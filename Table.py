@@ -4,12 +4,12 @@ class Table:
     def __init__(self, name=""):
         self.__rows = 0   # 行数（包含文字行）
         self.__cols = 0   # 列数（包含文字行）
-        self.__keystr = ""
-        self.__keys = []
+        self.__keystr = ""# 数据区域字符串，以句号隔开，如："C3:D4,F3:G4"
+        self.__keys = []  # 数据区域列表（1或多个）
         self.__name = name
 
         self.__datastr = ""   # 字符串形式的数据
-        self.__data = []   # 数组形式的数据
+        self.__data = {}   # 字典形式的数据
         self.__areas = 2   # 数据块数量
 
     def display(self):
@@ -57,12 +57,13 @@ class Table:
     def keystr(self):
         return self.__keystr
 
-    def set_keystr(self, keystr):
+    def set_keystr(self, keystr):  #设置数据区域
         self.__keystr = keystr
-        if "," in keystr:  # 多区域
-            k = keystr.split(",")
-            for area in k:
-                pass
+
+    def in_area(self, cellname):  #判断单元格是否在数字区域, C3 in_area C3:D4, C2 not in_area C3:D4
+        c = self.lab2rc(cellname)
+
+        return c[0]
 
     @staticmethod
     def get_keys(keys):
@@ -70,7 +71,7 @@ class Table:
             pass
 
     @staticmethod
-    def c2n(self, colname):  # 字符列号转为数字号，从1开始
+    def c2n(colname):  # 字符列号转为数字号，从1开始
         ch = colname.upper()
 
         if len(ch) == 1:    # TRS的列号限制不能超过Z
@@ -79,9 +80,10 @@ class Table:
             return -1
 
     @staticmethod
-    def lab2rc(self, lab):  # 名称转换为行列号
+    def lab2rc(lab):  # 名称转换为行列号
+        cname = lab.upper()
         if len(lab) > 1:
-            return self.c2n(lab[:1]), int(lab[1:])
+            return ord(cname[:1]) - 64, int(cname[1:])
         else:
             return -1, -1
 
@@ -99,4 +101,3 @@ class Table:
     """
     def getdata(cellname):  #根据行列名返回数据
         return 0.00
-

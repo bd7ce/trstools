@@ -95,8 +95,7 @@ class Book:
                 tt.set_name(p[0])
 
                 q = p[2].partition(";")  #每个表有两个参数：最大行列；数据块1，2，3...
-                tt.set_cols(ord(q[0][:1])-64)  # 列数
-                tt.set_rows(int(q[0][1:]))
+                tt.set_rc(int(q[0][1:]), ord(q[0][:1])-64)
                 tt.set_keystr(q[2])
 
                 self.__tables.append(tt)

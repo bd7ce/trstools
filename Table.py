@@ -16,15 +16,11 @@ class Table:
 
         self.__datastr = ""   # 字符串形式的数据
         self.__data = {}   # 字典形式的数据
-        #self.__df = pd.DataFrame()  # dataframe形式的数据
+        #self.__df = pd.DataFrame()  # dataframe形式的数据,在读取时初始化，此处留空
 
     def display(self):
         print("Table %s: rows = %s, cols = %s\n"%(self.__name, self.__rows, self.__cols))
-        for r in range(1, self.__rows + 1):
-            s = ""
-            for c in range(0, self.__cols):
-                s = s + str(self.__df[chr(65+c)][r]) + " "
-            print(s)
+        print(self.__df)
 
     def __str__(self):
         result = ""
@@ -150,7 +146,7 @@ class Table:
     """
     def getdata(self, cellname):  #计算公式，根据行列名返回数据
         cn = cellname.upper()
-        if ":" in cn: # 数组
+        if ":" in cn: # 数组, A1:B4 ==> __df.loc[1:4,'A':'B']
             pass
         elif "->" in cn:  # 表间
             pass

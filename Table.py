@@ -146,7 +146,7 @@ class Table:
     """
     def getdata(self, cellname):  #计算公式，根据行列名返回数据
         cn = cellname.upper()
-        if ":" in cn: # 数组, A1:B4 ==> __df.loc[1:4,'A':'B']
+        if ":" in cn:  # 数组, A1:B4 ==> __df.loc[1:4,'A':'B']
             pass
         elif "->" in cn:  # 表间
             pass
@@ -155,9 +155,3 @@ class Table:
         else:  #直接
             return self.safefloat(self.__data[cn])
 
-    # 审核公式： C3 > D4, [C3:C8] > [D3:D8]
-    def audit(self, formula):
-        if "=" in formula:
-            p = formula.partition("=")
-            left = p[0]
-            right = p[2]

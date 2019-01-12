@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from Table import Table
+import pymysql
 
 # 类---TRS任务，相当于excel的工作簿
 class Book:
@@ -100,3 +101,38 @@ class Book:
 
                 self.__tables.append(tt)
                 self.__tablenum += 1
+
+    # 审核公式： C3 > D4, [C3:C8] > [D3:D8]
+    # [C3:U3] > SUM([C4:U4]:[C6:U6]) ==> C3 > SUM(C4:C6) .. D3 > SUM(D4:D6)
+    # [C3:U4] + [C8:U8] > ...
+    # IF 函数 if(a,b,c)  -- 不实现
+    # SUM 函数 sum(a,b,c,d)  => sum((a,b,c,d))转换成元组
+    # 逻辑组合 （a=b)|(c=d)&(e=f)  -- 不实现
+    # 返回：公式，提示，左边，右边, 逻辑， 数组
+    # 数组公式标志： []
+    # TRS公式与python相差较大，为利用eval函数，不考虑直接实现TRS的全部公式，而是改用python的语法
+    def audit(self, formulas):
+        for f in formulas:
+            return eval(f)
+
+    def getconn():
+        return pymysql.connect(host="localhost", user="rpt", password="rpt", database="trsdata")
+
+    def savedb(self):
+        conn = self.getconn()
+        items = []
+        cur = conn.cursor()
+        try:
+            cur.executemany("insert into rptdata (bbq,dw,tname,cname,pval) values ('','','',%s,%s)", items)
+            assert cur.rowcount == len(items), "Insert error"
+            conn.commit()
+        except:
+            conn.rollback()
+        finally:
+            cur.close()
+            conn.close()
+
+    def readdb(self):
+        conn = self.getconn()
+        cur = conn.cursor()
+        rows = cur.execute("select * from rptdata")
